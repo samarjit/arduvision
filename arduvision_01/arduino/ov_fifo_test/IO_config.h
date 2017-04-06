@@ -149,6 +149,7 @@ void static inline setup_IO_ports() {
   // set fifo data pins as inputs 
   DATA_DDR  = 0;  // set pins as INPUTS
   
+  
   WREN_DDR  |= FIFO_WREN; // set pin as OUTPUT
   RCLK_DDR  |= FIFO_RCLK; // set pin as OUTPUT
   RRST_DDR  |= FIFO_RRST; // set pin as OUTPUT

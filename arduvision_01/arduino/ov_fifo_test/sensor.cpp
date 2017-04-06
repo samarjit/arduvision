@@ -15,7 +15,7 @@
 
 #include "delay.h"
 
-uint16_t sensor_init(frameFormat_t fFormat)
+uint16_t sensor_init(frameFormat_t fFormat, HardwareSerial *serialPtr)
 {
     regval_list *format_reglist, *common_reglist;
     uint8_t resetReg, resetCommand;
@@ -31,6 +31,8 @@ uint16_t sensor_init(frameFormat_t fFormat)
                   productID |= sensor_readReg(REG_VER);
                   switch (fFormat) {
                       default: 
+                      case FF_VGA: format_reglist = (regval_list*)vga_yuv_ov7670; break;
+                      case FF_QVGA: format_reglist = (regval_list*)qvga_yuv_ov7670; break;
                       case FF_QQVGA: format_reglist = (regval_list*)qqvga_yuv_ov7670; break;
                       case FF_QQQVGA: format_reglist = (regval_list*)qqqvga_yuv_ov7670; break;
                   }
@@ -60,6 +62,7 @@ uint16_t sensor_init(frameFormat_t fFormat)
     delay(300); // Setting time for register change
     sensor_writeRegs(format_reglist); 
     delay(300); // Setting time for register change
+    sensor_printlnRegs(format_reglist, *serialPtr);
     return productID;
 }
 //**************************

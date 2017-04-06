@@ -35,7 +35,7 @@ double fpsTimeStamp   = 0;
 PFont  myFont;
 PImage currFrame;
 
-boolean bSerialDebug = true;
+boolean bSerialDebug = false;
 
 int currRow = 0;
 byte thresh  = (byte)130;
@@ -69,12 +69,12 @@ void setup() {
   printArray(Serial.list());
 
   delay(500);
-  serialPort = new Serial(this, "/dev/ttyUSB0", G_DEF.BAUDRATE);
+  serialPort = new Serial(this, "COM5", G_DEF.BAUDRATE);
   serialPort.bufferUntil(G_DEF.LF);
   serialPort.clear();
   delay(2000);
   reqStatus = reqStatus.IDLE;
-  request = request.NONE;
+  request = request.STREAM0PPB;
 }
   
 // ************************************************************
@@ -117,7 +117,7 @@ void draw() {
                                             drawFPS();
                                             reqStatus = requestStatus_t.IDLE;
                                             break;
-                            case TIMEOUT:   
+                            case TIMEOUT:   println("timeout"); 
                             case IDLE:      reqImage(request);
                                             reqStatus = requestStatus_t.REQUESTED; 
                                             waitTimeout = G_DEF.SERIAL_TIMEOUT + millis();
@@ -181,7 +181,7 @@ void parseSerialData() {
                           if (currRow >= G_DEF.F_H) {
                               reqStatus = requestStatus_t.RECEIVED; // frame ready on buffer
                               currRow = 0;
-                              if (bSerialDebug) println();
+                              if (bSerialDebug) print('.');
                           }
                         break;
         default :       break;

@@ -56,7 +56,7 @@
  *     FIFO_WRST  --> level tranlator -->  PB6 / D12
  *     FIFO_RRST  --> level tranlator -->  PB7 / D13
  *        OV_SDA  <-> level tranlator <->  PD1 / SDA
- *        OV_SCL  <-> level tranlator <->  PD0 / SCL
+ *        OV_SCL  <-- level tranlator <->  PD0 / SCL
  *      OV_VSYNC  <-- level tranlator <--  PE4 / D2
  *       FIFO_D3  <-- level tranlator <--  PF3 / A3
  *       FIFO_D4  <-- level tranlator <--  PF4 / A4

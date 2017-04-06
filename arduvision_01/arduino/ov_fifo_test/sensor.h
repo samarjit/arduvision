@@ -14,17 +14,19 @@ struct regval_list {
 	uint8_t value;
 };
 enum frameFormat_t {
+     FF_VGA,
+     FF_QVGA,
      FF_QQVGA,
      FF_QQQVGA  
 };
 
 
-uint16_t sensor_init(frameFormat_t fFormat);
+uint16_t sensor_init(frameFormat_t fFormat, HardwareSerial *serialPtr);
 void al422_loadFrame(void);
 uint8_t sensor_writeReg(uint8_t regID, uint8_t regDat);
 void sensor_writeRegs(const regval_list reglist[]);
 uint8_t sensor_readReg(uint8_t regID);
-void sensor_printlnRegs(const regval_list reglist[]);
+void sensor_printlnRegs(const regval_list reglist[], Stream &destPort);
 void wait(void);
 
 #endif /* _SENSOR_H */

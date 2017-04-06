@@ -38,6 +38,9 @@ __asm volatile ("nop");
 #endif
 // --------------------------------
 
+#ifndef cbi
+#define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
+#endif
 
 #include "IO_config.h"
 #include "sensor.h"
@@ -82,17 +85,26 @@ unsigned int fps = 0;
 unsigned long volatile lastTime = 0;
 unsigned long volatile timeStamp = 0;
 
+#define QVGA
 //#define QQVGA
-#define QQQVGA
+//#define QQQVGA
 
 #ifdef QQVGA
 static const uint8_t fW = 160;
 static const uint8_t fH = 120;
 static const frameFormat_t frameFormat = FF_QQVGA;
-#else ifdef QQQVGA
+#elif defined QQQVGA
 static const uint8_t fW = 80;
 static const uint8_t fH = 60;
 static const frameFormat_t frameFormat = FF_QQQVGA;
+#elif defined QVGA
+static const uint16_t fW = 320;
+static const uint16_t fH = 240;
+static const frameFormat_t frameFormat = FF_QVGA;
+#elif defined VGA
+static const uint16_t fW = 640;
+static const uint16_t fH = 480;
+static const frameFormat_t frameFormat = FF_VGA;
 #endif
 
 static const uint8_t TRACK_BORDER = 4; // always multiple of 2 (YUYV: 2 pixels)
@@ -125,12 +137,13 @@ serialRequest_t serialRequest = SEND_NONE;
 void setup()
 {
   setup_IO_ports();
-  
+//  cbi(PORTC, 4);
+//  cbi(PORTC, 5);
   serialPtr->begin(_BAUDRATE);
-
+serialPtr->println(fW);
   serialPtr->println("Initializing sensor...");
   for (int i = 0; i < 10; i ++) {
-       unsigned int result = sensor_init(frameFormat);
+       unsigned int result = sensor_init(frameFormat, serialPtr);
       if (result != 0) {
         serialPtr->print("inited OK, sensor PID: ");
         serialPtr->println(result, HEX);
@@ -159,7 +172,7 @@ void loop()
 // *****************************************************
 //               VSYNC INTERRUPT HANDLER
 // *****************************************************
-void __inline__ vsyncIntFunc() {
+void  vsyncIntFunc() {
       DISABLE_WREN; // disable writing to fifo
           
       if (bRequestPending && bNewFrame) {

@@ -28,13 +28,18 @@ void  __inline__ fifo_skipBytes(unsigned long nBytes)
 // --------------------------------------
 static __inline__ void fifo_readRow0ppb(uint8_t* _rowStart, uint8_t* _rowEnd)
 {
+  //Set first 3 bits from portc analog inputs
+  //DDRC = DDRC&B11111001;
+  
     while (_rowStart != _rowEnd) {
       SET_RCLK_H;
-      *_rowStart++ = DATA_PINS;
+          
+      *_rowStart++ =  DATA_PINS;// & 0xf8  |  PINC & 0x06;
       //_delayNanoseconds(5);
       SET_RCLK_L;
       //_delayNanoseconds(5);
     }
+ // DDRC = DDRC|B00000110;
 }
 // --------------------------------------
 static __inline__ void fifo_readRow1ppb(uint8_t* _rowStart, uint8_t* _rowEnd)
